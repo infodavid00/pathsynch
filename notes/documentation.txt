@@ -1,0 +1,2124 @@
+title:: Pathsynch Server-side Documentation ::title
+
+section:: 
+ headerl:: Api [83 ENDPOINTS] ::headerl
+::section
+
+
+<!-- create account Customer -->
+section::
+ headerl:: Create Account Customer ::headerl
+   
+   section::
+    headerx:: FLOW 1 ::headerx
+    computercode::
+  POST /v2/auth/signup/customer/mobile/1/:mobile
+  Content-Type: application/json 
+    ::computercode
+    content:: the mobile must follow the same format used when signin up default flow. ::content
+   ::section
+
+   section::
+    headerx:: FLOW 2 ::headerx
+    computercode::
+  POST /v2/auth/signup/customer/mobile/2/:token/:otp
+  Content-Type: application/json 
+    ::computercode
+    content:: replace otptoken with the actual token gotten from flow 1, and otp with the otp sent via sms. ::content
+   ::section
+
+   section::
+    headerx:: FLOW 3 ::headerx
+    computercode::
+  POST /v2/auth/signup/customer/mobile/3/:token?referal=referal
+  Content-Type: application/json
+  {
+   "email" : "info@example.com",
+   "fname": "Jane",
+   "lname" : "Doe",
+   "password" : "12345678",
+   "dob": "yyyy-mm-dd", 
+   "zip": "100021",
+   "profile" : "https://myprofile/s3/aws/whereigotitfrom/me.jpg"
+  }
+    ::computercode
+    content:: replace token with the token gotten from flow2, and referal with the referal link if used. zip, profile and dob are optional fields. ::content
+   ::section
+
+ ::section
+<!-- create account Customer done -->
+
+
+
+
+
+
+<!-- signup oauth -->
+section::
+ headerl:: Signup [CUSTOMER] Oauth Flow ::headerl
+ computercode::
+  POST /v2/auth/register/customer/oath/:issuer/:userId?referal=referal
+  Content-Type: application/json
+  {
+   "email" : "info@example.com",
+   "mobile" : "1234567890",
+   "fname": "Jane",
+   "lname" : "Doe",
+   "dob": "yyyy-mm-dd", 
+   "zip": "100021",
+   "profile" : "https://myprofile/s3/aws/whereigotitfrom/me.jpg"
+  }
+ ::computercode
+ content::
+ replace dob with date of birth if present else remove the field, same goes profile, mobile(country code format and also exclude the + sign) and zip.
+ ::content
+ content:: issuer can only be apple or google. replace userId with the actual id gotten from the ouath's resource server. 
+  just like the default method, do not include a referal id unless the user is signin up using a referal id (replace referal with the actual referal id, in that case).
+ ::content
+ info::
+  note that if the google or apple account has a verified mobile number and you included it in the mobile field, then the server marks the account as verified. else, the server still creates the profile, but send a token as response in which the end user would have to use to manually input his/her mobile number. below 
+  is the endpoint for doing that. 
+ ::info
+::section
+<!-- signup oauth done -->
+
+
+
+
+
+<!-- signup oauth step2 -->
+section::
+ headerl:: Signup CUSTOMER Oauth Flow [Add Mobile Manually]::headerl
+ computercode::
+  POST /v2/auth/register/customer/addmobile
+  Content-Type: application/json
+  data: {
+   "token" : "token",
+   "mobile": "1234567890"
+  }
+ ::computercode
+ content:: the mobile must follow the same format used when signin up using the normal flow. the user can now continue with verifying his/her mobile after doing the successfully. ::content
+::section
+<!-- signup oauth step2 done -->
+
+
+
+
+
+<!--  verify mobile [oauth customer] manually -->
+section::
+ headerl:: Verify Mobile Manually [Oauth Customer] ::headerl
+ computercode::
+  POST /v2/auth/register/customer/verify/:otptoken?otp=otp
+  Content-Type: application/json
+ ::computercode
+ content:: replace otptoken with otptoken and otp with the actual otp gotten. ::content
+::section
+<!-- verify mobile [oauth customer] manually done -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- location access customer -->
+section::
+ headerl:: Location Access [CUSTOMER] ::headerl
+ computercode::
+  PUT /v2/cstm/locationAccess/:accesstoken
+  Content-Type: application/json 
+  {
+   "longitude" : "00000000", 
+   "latitude" : "111111111"
+  }  
+ ::computercode
+ content:: replace parameters with appropriate values.
+ ::content
+ ::section
+<!-- location access customer done -->
+
+
+
+
+
+
+<!-- signup merchant -->
+section::
+ headerl:: Signup [MERCHANT]::headerl
+ computercode::
+  POST /v2/auth/register/merchant?referal=referal
+  Content-Type: application/json
+  data: {
+    "email" : "info@example.com",
+    "landline" : "1234567890",
+    "fname": "Jane",
+    "lname" : "Doe",
+    "password" : "12345678",
+    "city": "city",
+    "state": "state",
+    "address": "address",
+    "category": "buisness",
+    "profile" : "https://myprofile/s3/aws/whereigotitfrom/me.jpg",
+    "dob": "2023-12-10T02:14:39.323Z", 
+    "zip": "100000",
+    "trail": "Trail",
+    "buisnessname": "pathsynch",
+    "servicesTypes": [],
+    "services": []
+ }
+ ::computercode
+ content:: landline would follow mobile format, not all fields are required, so add the fields you most likely provided a form for.
+ keep in mind that profile and dob are the only optional fields.
+ ::content
+ info::
+  if the user is signin up using a referal link, replace the refaral link with the referal query value.
+ ::info
+ content:: warnmessage:: DO NOT INCLUDE THE REFERAL QUERY PARAMETER IF THE USER IS NOT SIGNIN UP USING A REFERAL LINK ::warnmessage
+::section
+<!-- signup merchant done -->
+
+
+
+
+
+
+
+<!-- verify account merchant -->
+section::
+ headerl:: Verify Account [MERCHANT] ::headerl
+ computercode::
+  POST /v2/auth/register/merchant/verify/:token
+  Content-Type: application/json
+ ::computercode
+ content:: replace token with the token sent to the user via email. ::content
+::section
+<!-- verify account merchant done -->
+
+
+
+
+
+
+
+
+<!-- refresh accesstoken -->
+section::
+ headerl:: Refresh Accesstoken ::headerl
+ content:: available on both boldmessage::Version 1::boldmessage and boldmessage::Version 2::boldmessage. ::content
+ computercode::
+  POST /v2/auth/checkpoint/natoken/:refreshtoken
+  Content-Type: application/json
+ ::computercode
+ content:: instantly returns a new accesstoken. ::content
+::section
+<!-- refresh accesstoken done -->
+
+
+
+
+
+
+
+
+<!-- sigin as admin -->
+section::
+ headerl:: Signin [Admin] ::headerl
+ content:: available on both boldmessage::Version 1::boldmessage and boldmessage::Version 2::boldmessage. ::content
+ computercode::
+  POST /v2/auth/checkpoint/admin/hax4
+  Content-Type: application/json
+  data : {
+   "password" : "123456789"
+  }
+ ::computercode
+ content:: returns an accesstoken. ::content
+::section
+<!-- sigin as admin  done -->
+
+
+
+
+
+
+
+<!-- signin default  customer -->
+section::
+ headerl:: Signin Default Flow [CUSTOMER] ::headerl
+ computercode::
+  POST /v2/auth/signin/customer
+  Content-Type: application/json
+  data: {
+   "email" : "info@example.com",
+   "password" : "123456"
+  }
+ ::computercode
+ content:: the mobile must follow the same format used when signin up. ::content
+::section
+<!-- signin default customer done -->
+
+
+
+
+
+
+
+
+
+
+<!-- signin oauth customer -->
+section::
+ headerl:: Signin OAUTH Flow [CUSTOMER]::headerl
+ computercode::
+  POST /v2/auth/signin/customer/:issuer/:userId/:email
+  Content-Type: application/json
+ ::computercode
+ content:: issuer can only be apple or google. replace userId with the actual id gotten from the ouath's resource server and email with email also. 
+::content
+::section
+<!-- signin oauth customer  done -->
+
+
+
+
+
+
+
+
+<!-- signin  merchant -->
+section::
+ headerl:: Signin [MERCHANT]::headerl
+ computercode::
+  POST /v2/auth/signin/merchant
+  Content-Type: application/json
+  data: {
+   "email": "info@example.com",
+   "password": "123456"
+  }
+ ::computercode
+ content:: returns access and refresh token if done correctly. ::content
+::section
+<!-- signin merchant done -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- forgotten password customer -->
+section::
+ headerl:: Forgotten password [CUSTOMER] ::headerl
+   
+   section::
+    headerx:: FLOW 1 ::headerx
+    computercode::
+  POST /v2/auth/fp/customer/1/:mobile
+  Content-Type: application/json 
+    ::computercode
+    content:: the mobile must follow the same format used when signin up. ::content
+   ::section
+
+   section::
+    headerx:: FLOW 2 ::headerx
+    computercode::
+  POST /v2/auth/fp/customer/2/:otptoken?otp=otp
+  Content-Type: application/json 
+    ::computercode
+    content:: replace otptoken with the actual token gotten from flow 1, and otp with the otp sent via sms. ::content
+   ::section
+
+   section::
+    headerx:: FLOW 3 ::headerx
+    computercode::
+  POST /v2/auth/fp/customer/3/:token
+  Content-Type: application/json
+  data : {
+    "password" : "12345678"
+  }
+    ::computercode
+    content:: replace token with the token gotten from flow2, and password with the end user's desired password. ::content
+   ::section
+
+ ::section
+<!-- forgotten password customer done -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- forgotten password merchant -->
+section::
+ headerl:: Forgotten password [MERCHANT] ::headerl
+   
+   section::
+    headerx:: FLOW 1 ::headerx
+    computercode::
+  POST /v2/auth/fp/merchant/1/:email
+  Content-Type: application/json 
+    ::computercode
+    content:: sends a token to the provided email address. ::content
+   ::section
+
+   section::
+    headerx:: FLOW 2 ::headerx
+    computercode::
+  POST /v2/auth/fp/merchant/2/:token
+  Content-Type: application/json
+  data : {
+    "password" : "12345678"
+  }
+    ::computercode
+    content:: replace token with the token gotten from the users email, and password with the end user's desired password. ::content
+   ::section
+
+ ::section
+<!-- forgotten password merchant done -->
+
+
+
+
+
+
+
+
+
+
+<!-- sendapp link -->
+section::
+ headerl:: Sendapplicationurl [LINK] ::headerl
+ content:: supported on boldmessage::Version 2::boldmessage and boldmessage::Version 1::boldmessage. ::content
+ computercode::
+  GET /v2/etc/get/url/tosendmobile/:mobile
+  Content-type: application/json
+ ::computercode
+ content:: mobile must follow the countrycode format (always exclude the + sign).
+ ::content
+::section
+<!-- sendapp link done -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- contact pathsynch  -->
+section::
+ headerl:: Contact pathsynch ::headerl
+ content:: supported on boldmessage::Version 2::boldmessage and boldmessage::Version 1::boldmessage. ::content
+ computercode::
+  POST /v2/etc/contact
+  Content-type: application/json
+  data: {
+    "fname": "Path", 
+    "lname": "Synch", 
+    "email": "info@example.com", 
+    "mobile" : "1234567890", 
+    "message" : "The appplication has been good so far"
+  }
+ ::computercode
+ content:: both fname and lname must not contain any none word character, and mobile must
+  follow the countrycode format (always exclude the + sign).
+ ::content
+::section
+<!-- contact pathsynch done -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- support -->
+section::
+ headerl:: Support ::headerl
+ computercode::
+  POST /v2/etc/support
+  Content-type: application/json
+  data: {
+    "name": "Jane Doe",  
+    "email": "info@example.com", 
+    "mobile" : "1234567890", 
+    "message" : "How does this $path thing works please??.",
+    "company": "Maincompany",
+    "natureOfwork" : "IT"
+  }
+ ::computercode
+ content:: mobile must follow the countrycode format (always exclude the + sign),
+  all fields are required.
+ ::content
+::section
+<!-- support done -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- create campaign -->
+section::
+ headerl:: Create Campaign ::headerl
+ content:: supported on boldmessage::Version 2::boldmessage. ::content
+ computercode::
+  POST /v2/campaign/new/:accesstoken
+  Content-type: application/json
+  {
+     "value" : 100,
+     "discount" : 0,
+     "startDate" : "2023-12-17",
+     "title": "title",
+     "endDate" : "2023-12-17",
+     "description" : "description",
+     "noOfcampaigns" : 10,
+     "options" : ["online"],
+     "cover" : "f://c/users/downloads/myphotogottenfromgallery.jpg",
+     "CampaignsPurchasablePerCustomer" : 1,
+     "repurchaseCampaignAfter" : 1
+  } 
+ ::computercode
+ content:: value represents campaign value, discount represents discount offer, title represents campaign name, description as discount description, CampaignsPurchasablePerCustomer represents how many campaigns can each customer purchase,
+ and repurchaseCampaignAfter represents how often customers can purchase campaign.  if multiple options can be selected, then be sure to add it in the array and if the membership option is added to the array, always insert the below fields :
+ ::content
+ computercode::
+     "options" : ["membership"], //add the membership option to the array
+     "weeks" : 0,
+     "validPerWeek" : "unlimited or desired value"
+ ::computercode
+ content::
+ note that the backend will also check if the campaign is the first created by the merchant and if onboarding has been verified, if so then be sure to insert the accepted fields or else the server will throw an error.
+ the accepted fields includes :
+ ::content
+ computercode::
+ {
+    "website" : "https://mybuisness.io",
+    "social" : {
+        "linkedin": "https://linkedin.com/id",
+        "twitter": "https://twitter.com/id",
+        "instagram": "https://instagram.com/id",
+        "facebook": "https://facebook.com/id"
+     },
+     "details": "details",
+     "menu" : "https://menu.jpg",
+     "logo" : "f://c/users/downloads/mylogo.jpg"
+ }
+ ::computercode
+ info:: they is an endpoint that provides info about the merchant stating weather the inputs have been inserted before or not.  ::info
+::section
+<!-- create campaign done -->
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- add favourite -->
+section::
+ headerl:: Add Favourite::headerl
+ computercode::
+  PUT /v2/user/favourite/push/:accesstoken/:userid
+  Content-Type: application/json   
+ ::computercode
+ content:: replace userid with the users's id (always pubId). ::content
+::section
+<!-- add favourite done -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- remove favourite -->
+section::
+ headerl:: Remove Favourite ::headerl
+ computercode::
+  DELETE /v2/user/favourite/pull/:accesstoken/:userid
+  Content-Type: application/json   
+ ::computercode
+ content:: replace userid with the users's id (always pubId). ::content
+::section
+<!-- remove favourite done -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- get favourites-->
+section::
+ headerl:: Retrieve Favourites ::headerl
+ computercode::
+  GET /v2/user/favourite/get/:accesstoken?snapshot=x&index=0
+  Content-Type: application/json   
+ ::computercode
+ content:: the snapshot query accepts only 3 values which are : x, m, l. specifying
+ snapshot = x means the document should be of size 10 users (the lists of users). m meaning
+ size of 15 users and l meanining size of 20 users. any value used in snapshot other than x,
+ l, m, the server will ignore it and use the default value x which is size(10).
+ the index parameter specify the current page to fetch from, default is page 0. ::content
+ 
+ content:: in summary, ?snapshot=x&index=0 simply fetches the first 10 users/docs, 
+ ?snapshot=x&index=1 fetches another 10 users, but continuing from where the previous query stopped since you explicitly
+ specified index=1 which still means page=1. ::content
+::section
+<!-- get favourites done -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- add follower -->
+section::
+ headerl:: Add Follower [Follow] ::headerl
+ computercode::
+  PUT /v2/user/follow/push/:accesstoken/:userid
+  Content-Type: application/json   
+ ::computercode
+ content:: replace userid with the user's id (always pubId). ::content
+::section
+<!-- add follower done -->
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- get follower or following  -->
+section::
+ headerl:: Retrieve Followers or Following ::headerl
+ computercode::
+  GET /v2/user/follow/get/:accesstoken/:type?snapshot=x&index=0
+  Content-Type: application/json   
+ ::computercode
+ content:: the snapshot query accepts only 3 values which are : x, m, l. specifying
+ snapshot = x means the return array should be of size 10 users (the lists of users). m meaning
+ size of 15 users and l meanining size of 20 users. any value used in snapshot other than x,
+ l, m, the server will ignore it and use the default value x which is size(10).
+ the index parameter specify the current page to fetch from, default is page zero.
+ type can only be "followers" or "following", specifying follwers returns the lists of followers
+ and specifying following returns the lists of following, any value other than "followers" or "following",
+ will cause the server to throw an error back to the end user.  ::content
+ 
+ content:: in summary, ?snapshot=x&index=0 simply fetches the first 10 users/docs, 
+ ?snapshot=x&index=1 fetches another 10 users, but continuing from where the previous query stoped since your explicitly
+ specified index=1 which still means page=1. ::content
+::section
+<!-- get follower or following  done -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- update personalization -->
+section::
+ headerl:: Update Personalization [Customer] ::headerl
+ computercode::
+  PUT /v2/cstm/personalization/:accesstoken
+  Content-Type: application/json   
+  data : {
+    "data" : ["news", "gaming", "crypto"]
+  }
+ ::computercode
+ content:: replace accesstoken with accesstoken. ::content
+::section
+<!-- update personalization done -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- get personalization -->
+section::
+ headerl:: Get Personalization [Customer] ::headerl
+ computercode::
+  GET /v2/cstm/personalization/:accesstoken
+  Content-Type: application/json   
+ ::computercode
+ content:: replace accesstoken with accesstoken. ::content
+::section
+<!-- get personalization done -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- get path points -->
+section::
+ headerl:: Get $Path Points [Customer] ::headerl
+ computercode::
+  GET /v2/cstm/dpath/:accesstoken
+  Content-Type: application/json   
+ ::computercode
+ content:: replace accesstoken with accesstoken. ::content
+::section
+<!-- get pathpoints done -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- get referal link -->
+section::
+ headerl:: Get Referal Link [Customer] ::headerl
+ computercode::
+  GET /v2/cstm/referal/:accesstoken
+  Content-Type: application/json   
+ ::computercode
+ content:: replace accesstoken with accesstoken. ::content
+::section
+<!-- get referal link done -->
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- update buisnesstype -->
+section::
+ headerl:: Update BuisnessType [Merchant] ::headerl
+ computercode::
+  PUT /v2/mcnt/buisnesstype/:accesstoken
+  Content-Type: application/json
+  data : {
+   "category" : "category", 
+   "servicesTypes" : ["others"],
+   "services" : ["serviceA", "serviceB"]
+  }
+ ::computercode
+ content:: servicesTypes and services must be type array, services is limited to only five elements in the array. ::content
+::section
+<!-- update buisnesstype done -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- get buisnesstype -->
+section::
+ headerl:: Get Buisnesstype [Merchant] ::headerl
+ computercode::
+  GET /v2/mcnt/buisnesstype/:accesstoken
+  Content-Type: application/json   
+ ::computercode
+ content:: replace accesstoken with accesstoken. ::content
+::section
+<!-- get buisnesstype done -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- update details -->
+section::
+ headerl:: Update Details || About [Merchant] ::headerl
+ computercode::
+  PUT /v2/mcnt/details/:accesstoken
+  Content-Type: application/json   
+  {
+   "details" : "this should be my new about info"
+  }
+ ::computercode
+ content:: replace accesstoken with accesstoken. ::content
+::section
+<!-- update details done -->
+
+
+
+
+
+
+
+
+
+
+<!-- update menu or logo -->
+section::
+ headerl:: Update Menu/Logo [Merchant] ::headerl
+ computercode::
+  PUT /v2/mcnt/menuORlogo/:accesstoken
+  Content-Type: application/json   
+  {
+   "menu" : "linktomenu.jpeg",
+   "logo" : "linktologo.jpeg"
+  }
+ ::computercode
+ content:: replace accesstoken with accesstoken, be sure to exlude any field you are not updating. ::content
+::section
+<!-- update menu or logo done -->
+
+
+
+
+
+
+
+
+
+
+<!-- update social or web -->
+section::
+ headerl:: Update Social/Website [Merchant] ::headerl
+ computercode::
+  PUT /v2/mcnt/socialORweb/:accesstoken
+  Content-Type: application/json   
+  {
+   "social" : {
+    "linkedin": "https://linkedin.com/id",
+    "twitter": "https://twitter.com/id",
+    "instagram": "https://instagram.com/id",
+    "facebook": "https://facebook.com/id"
+   },
+   "website" : "https://domain.com"
+  }
+ ::computercode
+ content:: replace accesstoken with accesstoken, be sure to exlude any field you are not updating. ::content
+::section
+<!-- update social or web -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- get menu or logo -->
+section::
+ headerl:: Get Menu/Logo [Merchant] ::headerl
+ computercode::
+  GET /v2/mcnt/menuORlogo/:accesstoken
+  Content-Type: application/json   
+ ::computercode
+ content:: replace accesstoken with accesstoken. ::content
+::section
+<!-- get menu or logo done -->
+
+
+
+
+
+
+
+<!-- get social or website -->
+section::
+ headerl:: Get Social/Website [Merchant] ::headerl
+ computercode::
+  GET /v2/mcnt/socialORweb/:accesstoken
+  Content-Type: application/json   
+ ::computercode
+ content:: replace accesstoken with accesstoken. ::content
+::section
+<!-- get social or website done -->
+
+
+
+
+
+
+
+<!-- get details or about -->
+section::
+ headerl:: Get Details || About [Merchant] ::headerl
+ computercode::
+  GET /v2/mcnt/details/:accesstoken
+  Content-Type: application/json   
+ ::computercode
+ content:: replace accesstoken with accesstoken. ::content
+::section
+<!-- get details or about done -->
+
+
+
+
+
+
+<!-- get user type -->
+section::
+ headerl:: Get Usertype ::headerl
+ computercode::
+  GET /v2/user/usertype/:accesstoken
+  Content-Type: application/json   
+ ::computercode
+ content:: replace accesstoken with accesstoken. ::content
+::section
+<!-- get user type done -->
+
+
+
+
+
+
+
+<!-- get merchant info -->
+section::
+ headerl:: Get Merchant Info ::headerl
+ content:: available on bold::Version 2::bold. ::content
+ computercode::
+ POST /v2/mcnt/userinfo/:accesstoken
+ Content-Type: application/json
+ data : {
+  "type" : 1,
+  "email" : 1,
+  "menu" : 1
+ }
+ ::computercode
+  content:: This particular endpoint allows for efficient and flexible user data fetching. it exposes some sets of user information (insensitive) to the end user,
+   which highly depends on how the endpoint is used. the aim is to create a centralized way of fetching user data, instead of providing multiple endpoints for each
+   type of functionality[query], this functionality simplifies this processes by just exposing a single endpoint in which the end user can simply get only the data he needs,
+   nothing more nothing less, further more increasing scalability, ligthweigthness and simplicity on the frontend and backend. 
+  ::content
+  headerx:: Use Case ::headerx
+  content::
+    replace the data with the lists of datas you want to request, note that the server does not read the values of the body object but rather the keys, so the value can be anything [a good practice should be : {"nameofscopeorkey": 1}],
+    as long as the key meets the requirements. if the key is out of the scope in which the server can provide, the server ignores the key and jump to the next line,etc. below are the list of accepted keys/scopes and an example of
+    how they can be applied in the request body. :
+  ::content
+  computercode::
+{
+ "isVerified" : 1,
+ "issuer" : 1,
+ "type" : 1,
+ "email" : 1,
+ "menu" : 1,
+ "logo" : 1,
+ "name" : 1,
+ "landline" : 1,
+ "details" : 1,
+ "buisnessName" : 1,
+ "buisnessAddress" : 1,
+ "createdAt" : 1,
+ "lastupdateAt" : 1,
+ "pubId" : 1,
+ "referedBy" : 1,
+ "followersCount" : 1,
+ "followingCount" : 1,
+ "campaignCount" : 1
+}
+  ::computercode
+  info::
+   the above values are the list of the accepted keys/scopes. null fields are not returned. be sure to add a logic for checking if the field is present. ::information
+::section
+<!-- get merchant info done -->
+
+
+
+
+
+
+
+
+<!-- edit profile [customer] -->
+section::
+ headerl:: Edit Profile [Customer] ::headerl
+ computercode::
+  PUT /v2/cstm/profileupdate/:accesstoken
+  Content-Type: application/json 
+  {
+   "fname" : "fname", 
+   "lname" : "lname", 
+   "zip" : "1002002", 
+   "dob" : "dd/mm/yyyy", 
+   "profile" : "http://myprofile.com"
+   }  
+ ::computercode
+ content:: replace accesstoken with accesstoken. ::content
+::section
+<!-- edit profile [customer] done -->
+
+
+
+
+
+
+
+
+<!-- get customer info -->
+section::
+ headerl:: Get Customer Info ::headerl
+ content:: available on bold::Version 2::bold. ::content
+ computercode::
+ POST /v2/cstm/userinfo/:accesstoken
+ Content-Type: application/json
+ data : {
+  "email" : 1,
+  "profilephoto" : 1,
+  "name" : 1,
+ }
+ ::computercode
+  content:: This endpoint has the same functionality with boldmessage:: [get info Merchant] ::boldmessage ::content
+  content::
+    below are the list of accepted keys/scopes and an example of how they can be applied in the request body. :
+  ::content
+  computercode::
+{
+"type" : 1,
+"email" : 1,
+"profilephoto" : 1,
+"name" : 1,
+"mobile" : 1,
+"dob" : 1,
+"zip" : 1,
+"createdAt" : 1,
+"lastupdateAt" : 1,
+"pubId" : 1,
+"isVerified" : 1,
+"issuer" : 1,
+"profilestatus" : 1,
+"isCUI" : 1,
+"referedBy" : 1,
+"followersCount" : 1,
+"followingCount" : 1
+}
+  ::computercode
+  info::
+   the above values are the list of the accepted keys/scopes. null fields are not returned. be sure to add a logic for checking if the field is present. ::info
+::section
+<!-- get customer info done -->
+
+
+
+
+
+
+
+
+
+<!-- get multiple merchants -->
+section::
+ headerl:: Get Multiple Merchants ::headerl
+ computercode::
+  POST /v2/mcnt/gam?size=10&page=0
+  Content-Type: application/json   
+{
+ "query" : {
+  "state" : "state"
+},
+"projection" : {
+  "isVerified" : 1,
+  "issuer" : 1,
+  "type" : 1,
+  "email" : 1,
+  "menu" : 1,
+  "logo" : 1,
+  "name" : 1,
+  "landline" : 1,
+  "details" : 1,
+  "buisnessName" : 1,
+  "buisnessAddress" : 1,
+  "createdAt" : 1,
+  "lastupdateAt" : 1,
+  "pubId" : 1,
+  "referedBy" : 1,
+  "followersCount" : 1,
+  "followingCount" : 1,
+  "campaignCount" : 1
+ }
+}
+ ::computercode
+ content:: the query object holds the criteria for querying the data. below are all the available fields
+ for the query object ::content
+ computercode::
+ "query" : {
+  "all" : "",  <span style="color:rgba(200,200,200,0.6);">//get all merchants. [field value should just be ""]</span>
+  "city" : "city",  <span style="color:rgba(200,200,200,0.6);">//get all merchants where city is valueofcity </span>
+  "state" : "state", <span style="color:rgba(200,200,200,0.6);">//get all merchants where state is valueofstate </span>
+  "zip" : "zip", <span style="color:rgba(200,200,200,0.6);">//get all merchants where zip is valueofzip </span>
+  "category" : "category", <span style="color:rgba(200,200,200,0.6);">//get all merchants where category is valueofcategory </span>
+  "servicesTypes" : ["Plumbering"], <span style="color:rgba(200,200,200,0.6);">//get all merchants where servicesTypes has valueofservicesTypes </span>
+  "services" : ["IT"], <span style="color:rgba(200,200,200,0.6);">//get all merchants where services has valueofservices </span>
+  "creation" : "dd/mm/yyyy" <span style="color:rgba(200,200,200,0.6);">//get all merchants where creationdate is valueofcreationdate </span>
+},
+ ::computercode
+ content:: the projection object is to specify what data to return. ::content
+::section
+<!-- get multiple merchants done -->
+
+
+
+
+
+
+
+
+
+<!-- get merchant by id -->
+section::
+ headerl:: Get Merchants By ID ::headerl
+ computercode::
+  POST /v2/mcnt/gom/:merchantid
+  Content-Type: application/json   
+ ::computercode
+ content:: replace merchantid with the merchantId[pubId], specify the data you want to return using the same projection method as the above endpoint. EXAMPLE : ::content
+ computercode::
+{
+"projection" : {
+  "email" : 1,
+  "menu" : 1,
+  "logo" : 1,
+  "name" : 1,
+}
+}
+ ::computercode
+::section
+<!-- get merchant by id done -->
+
+
+
+
+
+
+
+
+
+
+<!-- get merchant campaigns -->
+section::
+ headerl:: Get Merchant Campaigns ::headerl
+ computercode::
+  POST /v2/mcnt/gmc/:merchantid?size=10&page=0
+  Content-Type: application/json   
+{
+"query" : {
+  "isActive" : true
+},
+"projection" : {
+  "isActive" : 1,
+  "noOfcampaigns" : 1,
+  "options" : 1,
+  "title" : 1,
+  "value" : 1,
+  "startDate" : 1,
+  "endDate" : 1,
+  "description" : 1,
+  "discount" : 1,
+  "cover" : 1,
+  "promotion" : 1,
+  "usersCount" : 1,
+  "repurchaseCampaignAfter" : 1,
+  "CampaignsPurchasablePerCustomer" : 1
+}
+}
+ ::computercode
+ content:: the query object holds the criteria for querying the data. below are all the available fields
+ for the query object : ::content
+ computercode::
+ "query" : {
+  "all" : "",  <span style="color:rgba(200,200,200,0.6);">//get all campaigns of the merchant. [field value should just be ""]</span>
+  "isActive" : true, <span style="color:rgba(200,200,200,0.6);">//get all active campaigns of the merchant </span>
+  "LnoOfcampaigns" : 10, <span style="color:rgba(200,200,200,0.6);">//get all campaigns of the merchant where the amount of campaigns offerd is less than value of LnoOfcampaigns </span>
+  "GnoOfcampaigns" : 10, <span style="color:rgba(200,200,200,0.6);">//get all campaigns of the merchant where the amount of campaigns offerd is greater than value of GnoOfcampaigns </span>
+  "options" : ["membership"], <span style="color:rgba(200,200,200,0.6);">//get campaigns of the merchant that has membership option [the value can contain other options] </span>
+  "Gvalue" : 100, <span style="color:rgba(200,200,200,0.6);">//get all campaigns of the merchant where the value is greater than value of Gvalue </span>
+  "Lvalue" : 100, <span style="color:rgba(200,200,200,0.6);">//get all campaigns of the merchant where the value is less than value of Lvalue </span>
+  "startDate" : "dd/mm/yyyy", <span style="color:rgba(200,200,200,0.6);">//get all campaigns of the merchant where the startdate is value of startDate </span>
+  "discount" : true <span style="color:rgba(200,200,200,0.6);">//get all campaigns of the merchant that offers discounts. </span>
+},
+ ::computercode
+ content:: the projection object is to specify what data to return. replace merchantid with merchantid and size, page params with the desired value. ::content
+::section
+<!-- get merchants campaign done -->
+
+
+
+
+
+
+
+
+
+<!-- get campaign by id -->
+section::
+ headerl:: Get Campaign By ID ::headerl
+ computercode::
+  GET /v2/user/one/campaign/:campaignid
+  Content-Type: application/json   
+ ::computercode
+ content:: replace campaignid with the campaignId[pubId].::content
+::section
+<!-- get campaign by id done -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- create coupon -->
+section::
+ headerl:: Create Coupon [Admin] ::headerl
+ computercode::
+  POST /v2/admin/coupon/:accesstoken
+  Content-Type: application/json   
+  {
+   "couponName" : "couponName",
+   "noOfCoupon" : 10,
+   "limitOfPrice": 50,
+   "voucherType": ["voucherType"],
+   "discounts": 10,
+   "code": "code",
+   "startDate": "yyyy/mm/dd",
+   "endDate" : "yyyy/mm/dd"
+}
+ ::computercode
+ content:: voucherType must include "promotion" to support purchasing promotions usign the coupon. ::content
+::section
+<!-- create coupon done -->
+
+
+
+
+
+
+
+
+<!-- toogle coupon status  -->
+section::
+ headerl:: Toogle Coupon Status [Admin] ::headerl
+ computercode::
+  PUT /v2/admin/ctoogle/:code/:accesstoken?status=status
+  Content-Type: application/json   
+ ::computercode
+ content:: replace code with coupon code if coupon is been used, accesstoken with accesstoken, and status with toogle status 1 or 0, where 1 means on and 0 means off [default is off]. you will get a
+ "coupon does not exist" if the coupon status was found to be offed.
+ ::content
+::section
+<!-- toogle coupon status done -->
+
+
+
+
+
+
+
+
+
+<!-- promote campaign  -->
+section::
+ headerl:: Promote Campaign [Merchant] ::headerl
+ computercode::
+  POST /v2/campaign/promote/:accesstoken/:promotionId/:campaignId?coupon=coupon
+  Content-Type: application/json   
+ ::computercode
+ content:: replace accesstoken with accesstoken, coupon with the coupon code, campaignId with the campaign pubId and promotionId with the promotion id.
+ below are the promotions id mapped to thier names respectively.
+ ::content
+ orderedlist::  Express promotion id === 930FF02 ::orderedlist
+ orderedlist::  Premium promotion id === SO994SK  ::orderedlist
+ orderedlist::  Standard promotion id === NNIK29 ::orderedlist
+ warnmessage:: coupons starts functioning a day after it was scheduled to start, so dont create a coupon which starts a day and end the following day as the coupon will never function. ::warnmessage
+::section
+<!-- promote campaign done -->
+
+
+
+
+
+
+
+<!-- Purchase campaign  -->
+section::
+ headerl:: Purchase Campaign [CUSTOMER] ::headerl
+ computercode::
+  POST /v2/campaign/purchase/:accesstoken/:id?coupon=coupon
+  Content-Type: application/json   
+ ::computercode
+ content:: replace id with campaign pubId and accesstoken with accesstoken. if coupon is been used, replace couponcode with coupon.
+ ::content
+  info::the timing is accurate and expires once the expiry day begins, or starts once the start date begins ::info
+::section
+<!-- purchase campaign done -->
+
+
+
+
+
+
+
+
+<!-- get promotions  -->
+section::
+ headerl:: Get Promotions [Admin Dashboard] ::headerl
+ computercode::
+  GET /v2/admin/promotions/:accesstoken/:date?page=page&size=size&dmy=dmy&type=type
+  Content-Type: application/json   
+ ::computercode
+ content:: replace accesstoken with accesstoken, and date with date. date can only be DD, MM, and YYYY, where : ::content
+ orderedlist:: DD queries for daily  ::orderedlist
+ orderedlist:: MM queries for monthly  ::orderedlist
+ orderedlist:: YYYY queries for yearly  ::orderedlist
+ content::  replace size with size, page with page, type with filter type usign their Sname : [Premium, Express, Standard]
+ and dmy with the actual date, year or month you're querying data for,  based on the :date parmas. for example setting date params to MM and dmy to 01 means query for january of this year. ::content
+ ::section
+<!-- get promotions done -->
+
+
+
+
+
+
+
+
+
+
+<!-- get coupons  -->
+section::
+ headerl:: Get Coupons [Admin Dashboard] ::headerl
+ computercode::
+  GET /v2/admin/coupon/:accesstoken?page=page&size=size&type=type
+  Content-Type: application/json   
+ ::computercode
+ content:: replace accesstoken with accesstoken, aswell and page and size. : ::content
+ ::section
+<!-- get coupons done -->
+
+
+
+
+
+
+
+<!-- get coupon  -->
+section::
+ headerl:: Get Coupon [Admin Dashboard] ::headerl
+ computercode::
+  GET /v2/admin/coupon/:code/:accesstoken
+  Content-Type: application/json   
+ ::computercode
+ content:: replace accesstoken with accesstoken, and code with coupon code. : ::content
+ ::section
+<!-- get coupon done -->
+
+
+
+
+
+
+<!-- get campaigns using coupon   -->
+section::
+ headerl:: Get Campaigns Using Coupons  [Admin Dashboard] ::headerl
+ computercode::
+  GET /v2/admin/cucoupon/:coupon/:accesstoken
+  Content-Type: application/json   
+ ::computercode
+ content:: replace accesstoken with accesstoken, and coupon with coupon name. : ::content
+ ::section
+<!-- get campaigns using coupon  done -->
+
+
+
+
+
+
+
+
+
+<!-- get coupon metrics details   -->
+section::
+ headerl:: Get Coupon Metrics Details  [Admin Dashboard] ::headerl
+ computercode::
+  GET /v2/admin/cdetails/:date/:accesstoken
+  Content-Type: application/json   
+ ::computercode
+ content:: replace accesstoken with accesstoken, and date with date [DD, MM or  YYYY] : ::content
+ ::section
+<!-- get coupon metrics details  done -->
+
+
+
+
+
+
+
+
+<!-- get campaigns merchant   -->
+section::
+ headerl:: Get Campaigns [Merchant] ::headerl
+ computercode::
+  GET /v2/mcnt/M/campaigns/:accesstoken/:query?page=page&size=size&filter=filter
+  Content-Type: application/json   
+ ::computercode
+ content:: replace accesstoken with accesstoken, page and size with appropriate values ::content
+ content:: :query parameter can only be all, active, expired, promoted or upcoming ::content
+ content:: filter can only be recent, mostsales, mostreview, topdiscocunt or filterbyprice ::content
+ ::section
+<!-- get campaigns merchant done -->
+
+
+
+
+
+
+
+
+
+
+<!-- get promotions merchant   -->
+section::
+ headerl:: Get Promotions [Merchant] ::headerl
+ computercode::
+  GET /v2/mcnt/M/promotions/:accesstoken/:query?page=page&size=size&filter=filter
+  Content-Type: application/json   
+ ::computercode
+ content:: replace accesstoken with accesstoken, page and size with appropriate values ::content
+ content:: :query parameter can only be all, active, expired or upcoming ::content
+ content:: filter can only be recent, mostsales, mostreview, topdiscocunt or filterbyprice ::content
+ ::section
+<!-- get promotions merchant done -->
+
+
+
+
+
+
+
+
+
+
+<!-- duplicate campaign merchant   -->
+section::
+ headerl:: Duplicate Campaign [Merchant] ::headerl
+ computercode::
+  POST /v2/mcnt/replicate/:accesstoken/:campaignId
+  Content-Type: application/json   
+ ::computercode
+ content:: in order not to get serious time related bugs, end date must be specified when creating or duplicating a campaign.
+ ::content
+ ::section
+<!-- duplicate campaign merchant done -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- edit campaign merchant   -->
+section::
+ headerl:: Edit Campaign [Merchant] ::headerl
+ computercode::
+  POST /v2/mcnt/campaignE/:accesstoken/:campaignId
+  Content-Type: application/json   
+  {
+   "title" : "title",
+   "description" : "description",
+   "cover" : "cover",
+   "startDate" : "yyyy-mm-dd",
+   "endDate" : "yyyy-mm-dd"
+  }
+ ::computercode
+ content:: always exclude fields you're not updating. ::content
+ ::section
+<!-- edit campaign merchant done -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- move to trash merchant   -->
+section::
+ headerl:: Move To Trash [Merchant] ::headerl
+ computercode::
+  POST /v2/mcnt/trash/mv/:accesstoken/:campaignId
+  Content-Type: application/json   
+ ::computercode
+ content:: replace parameters with appropriate values. ::content
+ ::section
+<!-- move to trash merchant done -->
+
+
+
+
+
+
+
+
+
+<!-- restore from trash merchant   -->
+section::
+ headerl:: Restore From Trash [Merchant] ::headerl
+ computercode::
+  POST /v2/mcnt/trash/rt/:accesstoken/:campaignId
+  Content-Type: application/json   
+ ::computercode
+ content:: replace parameters with appropriate values.
+ ::content
+ ::section
+<!-- restore from trash merchant done -->
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- view campaigns in trash merchant   -->
+section::
+ headerl:: View Campaigns In Trash [Merchant] ::headerl
+ computercode::
+  GET /v2/mcnt/trash/gt/:accesstoken?page=page&size=size
+  Content-Type: application/json   
+ ::computercode
+ content:: replace parameters with appropriate values.
+ ::content
+ ::section
+<!-- view campaigns in trash merchant done -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- reactive campaign merchant   -->
+section::
+ headerl:: Reactivate Campaign [Merchant] ::headerl
+ computercode::
+  POST /v2/mcnt/activate/:accesstoken/:campaignId
+  Content-Type: application/json   
+ ::computercode
+ content:: replace parameters with appropriate values.
+ ::content
+ ::section
+<!-- reactive campaign merchant done -->
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- get transactions admin   -->
+section::
+ headerl:: Get Transactions [Admin] ::headerl
+ computercode::
+  GET /v2/admin/transactions/:date/:accesstoken?page=page&size=size
+  Content-Type: application/json   
+ ::computercode
+ content:: replace parameters with appropriate values, :date must be in yyyy-mm-dd format.
+ ::content
+ ::section
+<!-- get transactions admin done -->
+
+
+
+
+
+
+
+
+
+
+<!-- get transactions details admin   -->
+section::
+ headerl:: Get Transactions Details [Admin] ::headerl
+ computercode::
+  GET /v2/admin/transactions/details/:ddmmyy/:accesstoken
+  Content-Type: application/json   
+ ::computercode
+ content:: replace parameters with appropriate values, ddmmyy value can only be DD,MM or YYYY.
+ ::content
+ ::section
+<!-- get transactions details admin done -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- get support messages admin -->
+section::
+ headerl:: Get Support Messages [Admin] ::headerl
+ computercode::
+  GET /v2/admin/support/:accesstoken?page=page&size=size
+  Content-Type: application/json   
+ ::computercode
+ content:: replace parameters with appropriate values.
+ ::content
+ ::section
+<!-- get support messages admin done -->
+
+
+
+
+
+
+
+
+
+
+<!-- get campaigns admin -->
+section::
+ headerl:: Get Campaigns [Admin] ::headerl
+ computercode::
+  GET /v2/admin/campaigns/:accesstoken?page=page&size=size&filter=filter
+  Content-Type: application/json   
+ ::computercode
+ content:: replace parameters with appropriate values, filter can only be membership, online, instore, and mystery-gift. exlcuding the filter query returns without filtering.
+ ::content
+ ::section
+<!-- get campaigns admin done -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- get campaigns details admin -->
+section::
+ headerl:: Get Campaigns Details[Admin] ::headerl
+ computercode::
+  GET /v2/admin/campaigns/:ddmmyy/:accesstoken
+  Content-Type: application/json   
+ ::computercode
+ content:: replace parameters with appropriate values, :ddmmyy can only be DD for daily, WW for weekly, MM for monthly,and YYYY for yearly.
+ ::content
+ ::section
+<!-- get campaigns details admin done -->
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- get merchant campaign details admin -->
+section::
+ headerl:: Get Merchant Campaigns Details [Admin] ::headerl
+ computercode::
+  GET v2/admin/mcampaignsdetails/:ddmmyy/:pubId/:accesstoken
+  Content-Type: application/json   
+ ::computercode
+ content:: replace pubId with the pubId of the merchant, :ddmmyy can only be DD for daily, MM for monthly,and YYYY for yearly.
+ ::content
+ content::
+  note that in the return object, past stands for last[dd/mm/yyyy] eg: lastweek, lastmonth or last year.
+ ::content
+ ::section
+<!-- get merchant campaign details admin done -->
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- get merchant campaigns admin -->
+section::
+ headerl:: Get Merchant Campaigns [Admin] ::headerl
+ computercode::
+  GET /v2/admin/mcampaigns/:pubId/:accesstoken?page=page&size=size
+  Content-Type: application/json   
+ ::computercode
+ content:: replace pubId with the pubId of the merchant.
+ ::content
+ ::section
+<!-- get merchant campaigns admin done -->
+
+
+
+
+
+
+
+
+
+
+<!-- add favourite campaign -->
+section::
+ headerl:: Add Favourite [Campaign]::headerl
+ computercode::
+  PUT /v2/user/favourite/campaign/push/:accesstoken/:campaignId
+  Content-Type: application/json   
+ ::computercode
+ content:: replace campaignId with the campaign's Id (always pubId). ::content
+::section
+<!-- add favourite campaign done -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- remove favourite campaign -->
+section::
+ headerl:: Remove Favourite [Campaign] ::headerl
+ computercode::
+  DELETE /v2/user/favourite/campaign/pull/:accesstoken/:campaignId
+  Content-Type: application/json   
+ ::computercode
+ content:: replace campaignId with the campaign's Id (always pubId). ::content
+::section
+<!-- remove favourite campaign done -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- get favourites campaign -->
+section::
+ headerl:: Retrieve Favourites [Campaigns] ::headerl
+ computercode::
+  GET /v2/user/favourite/campaign/get/:accesstoken?snapshot=x&index=0
+  Content-Type: application/json   
+ ::computercode
+ content:: the snapshot query accepts only 3 values which are : x, m, l. specifying
+ snapshot = x means the document should be of size 10 campaigns (the lists of campaigns). m meaning
+ size of 15 campaigns and l meanining size of 20 campaigns. any value used in snapshot other than x,
+ l, m, the server will ignore it and use the default value x which is size(10).
+ the index parameter specify the current page to fetch from, default is page 0. ::content
+ 
+ content:: in summary, ?snapshot=x&index=0 simply fetches the first 10 campaings/docs, 
+ ?snapshot=x&index=1 fetches another 10 camapigns, but continuing from where the previous query stopped since you explicitly
+ specified index=1 which still means page=1. ::content
+::section
+<!-- get favourites campaign done -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- get all campaigns -->
+section::
+ headerl:: Get All Campaigns ::headerl
+ computercode::
+  POST /v2/user/entry/campaigns?size=10&page=0
+  Content-Type: application/json   
+{
+"query" : {
+  "isActive" : true
+},
+"projection" : {
+  "isActive" : 1,
+  "noOfcampaigns" : 1,
+  "options" : 1,
+  "title" : 1,
+  "value" : 1,
+  "startDate" : 1,
+  "endDate" : 1,
+  "description" : 1,
+  "discount" : 1,
+  "cover" : 1,
+  "promotion" : 1,
+  "usersCount" : 1,
+  "repurchaseCampaignAfter" : 1,
+  "CampaignsPurchasablePerCustomer" : 1
+}
+}
+ ::computercode
+ content:: the query object holds the criteria for querying the data. below are all the available fields
+ for the query object : ::content
+ computercode::
+ "query" : {
+  "all" : "",  <span style="color:rgba(200,200,200,0.6);">//get all campaigns. [field value should just be ""]</span>
+  "isActive" : true, <span style="color:rgba(200,200,200,0.6);">//get all active campaigns </span>
+  "LnoOfcampaigns" : 10, <span style="color:rgba(200,200,200,0.6);">//get all campaigns where the amount of campaigns offerd is less than value of LnoOfcampaigns </span>
+  "GnoOfcampaigns" : 10, <span style="color:rgba(200,200,200,0.6);">//get all campaigns where the amount of campaigns offerd is greater than value of GnoOfcampaigns </span>
+  "options" : ["membership"], <span style="color:rgba(200,200,200,0.6);">//get campaigns that has membership option [the value can contain other options] </span>
+  "Gvalue" : 100, <span style="color:rgba(200,200,200,0.6);">//get all campaigns where the value is greater than value of Gvalue </span>
+  "Lvalue" : 100, <span style="color:rgba(200,200,200,0.6);">//get all campaigns where the value is less than value of Lvalue </span>
+  "startDate" : "dd/mm/yyyy", <span style="color:rgba(200,200,200,0.6);">//get all campaigns where the startdate is value of startDate </span>
+  "discount" : true <span style="color:rgba(200,200,200,0.6);">//get all campaigns that offers discounts. </span>
+  "ispromotion" : true <span style="color:rgba(200,200,200,0.6);">//get all campaigns using promotions. </span>
+  "promotion" : promotionName <span style="color:rgba(200,200,200,0.6);">//get all campaigns using <promotionName eg:Express> promotions. NOTE, VALUES SHOULD BE Standard, Express or Premium </span>
+  "Gusers" : 10, <span style="color:rgba(200,200,200,0.6);">//get all campaigns where the number of users is greater than value of Gusers </span>
+  "Lusers" : 10, <span style="color:rgba(200,200,200,0.6);">//get all campaigns where the number of users is less than value of Lusers </span>
+
+ },
+ ::computercode
+ content:: the projection object is to specify what data to return. replace size, page params with the desired value. ::content
+::section
+<!-- get all campaigns done -->
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- topup path points after following ps -->
+section::
+ headerl:: Topup PathPoints After Customer Follows ps on Social Media ::headerl
+ computercode::
+  PUT /v2/cstm/topupAfterFollowingps/:accesstoken/:type
+  Content-Type: application/json   
+ ::computercode
+ content:: type can only be facebook, x or instagram. ::content
+::section
+<!-- topup path points after following ps done -->
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- purchase state hook -->
+section::
+ headerl:: Purchase State [HOOK] ::headerl
+ computercode::
+  GET /v2/campaign/hooks/purchase/state/:transactionId
+  Content-Type: application/json   
+ ::computercode
+ content:: replace :transactionId with purchase transactionId. if done rigth, you should get the below object - ::content
+ computercode::
+ {
+  "from" : "ps",  <span style="color:rgba(200,200,200,0.6);">// ignore this </span>
+  "watch" : "sales", <span style="color:rgba(200,200,200,0.6);">// ignore this </span>
+  "state" : bool, <span style="color:rgba(200,200,200,0.6);">//value can be either true or false, where true means purchase was successfully completed, and false means purchase is either still pending or has be declined. </span>
+ }
+ ::computercode
+ content::
+  POV - On the client side, disabling or destroying the payment sheet once the payment fails is A must to avoid unecessary redundacy <br />
+  POV - Before Notifying the Enduser the campaign was purchased, you must call the purchase_state hook to confirm.
+ ::content
+::section
+<!-- purchase state hook done -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- respond to support messages -->
+section::
+ headerl:: Respond To Support Message [Admin] ::headerl
+ computercode::
+  POST /v2/admin/support/respond/:accesstoken
+  Content-Type: application/json   
+  data : {
+   "id" : "<_id_of_support_object>",
+   "email" : "infoOfSupportObject@example.com", 
+   "supportId" : "<supportId_of_support_object>", 
+   "body" : "Issue has been resolved!" 
+  }
+ ::computercode
+ content:: replace accesstoken with admintoken etc. ::content
+::section
+<!-- respond to support messages done -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- verify onboarding -->
+section::
+ headerl:: Verify Onboarding [Merchant] ::headerl
+ computercode::
+  GET /v2/mcnt/verify/onboarding/:accesstoken
+  Content-Type: application/json   
+ ::computercode
+ content:: replace accesstoken with accesstoken. ::content
+ content:: Only use this endpoint when a merchant tries creating a campagign but the request failed due to onboarding error (hasnt completed onboarding), so as to maintain accuracy.
+ ::content
+::section
+<!-- verify onboarding done -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- decode jwt -->
+section::
+ headerl:: Decode Jwt ::headerl
+ computercode::
+  GET /v2/config/jwt/decode/:token
+  Content-Type: application/json   
+ ::computercode
+ content:: replace token with jwt. note that you would get the jwt decoded payload in return, and the userid is represented as 'sub' in the payload. ::content
+::section
+<!-- decode jwt done -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- delete user -->
+section::
+ headerl:: Delete Account ::headerl
+ computercode::
+  POST /v2/user/deleteAllUserEntries/:accesstoken
+  Content-Type: application/json   
+  data : {
+   "acknowledgeRequest" : true
+  }
+ ::computercode
+ content:: replace accesstoken with user accesstoken. ::content
+::section
+<!-- delete user -->

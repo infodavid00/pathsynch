@@ -1,0 +1,54 @@
+# Changelog
+
+## [16:30] - 2024-02-13
+
+### Added
+
+- An endpoint for decoding jwt's and returning the payload.
+
+## [12:30] - 2024-02-11
+
+### Changed
+
+- Updated the oauth signup and signin endpoint.
+
+### Added
+
+- An endpoint for verifying mobile manually **oauth method **
+
+## [10:30] - 2024-02-8
+
+### Added
+
+- Functionality to respond to support messages
+- On creating and verifying merchant, a stripe express connect account will be created.
+- An endpoint to attain onboarding url and verifying stripe onboarding.
+- A new webhook to listen to completed onboarding events @`/webhook/onboarding`.
+
+### Changed
+
+- Updated : When sending a support message to pathsynch, pathsynch now issue a supportId to track updates and also marks the support message as `responded` once pathsynch responds to the message.
+- Updated : the webhook for listening to payments. changed endpoint to `/webhook/payment`.
+
+## [16:30] - 2024-01-27
+
+### Changed
+
+- Updated : Get campaigns [favourites] : added value, pubId, startDate, endDate and discount to returning object.
+- Updated : Get all campaigns : added logos of merchant to returning object.
+
+## [21:00] - 2024-01-26
+
+### Added
+
+- Favourite Campaigns: Users can now add, remove and view campaigns to|in favourites.
+- Get All Campaigns: Users can now get all campaigns.
+
+### Changed
+
+- Updated : [add 2 points after membership purchase | add 2 points after 5 membership purchases] to campaign with type membership only.
+- Updated [add 2 points after entire profile completation].
+
+### Fixed
+
+- Bug fix for unexpected crashes in the application.

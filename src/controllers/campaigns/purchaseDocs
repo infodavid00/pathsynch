@@ -1,0 +1,20 @@
+
+POV - when purchasing a campaign at phase [1] - 
+    ==> the purchaseCount field of campaign side is increamented
+    ==> the user.count field of campaign side is increamented
+    ==> the noOfCoupon.avail of the coupon side is decreamented 
+    ==> all infos are added to the watch collection.
+
+POV - when purchasing a campaign at phase [2] is SUCCESSFUL and COMPLETED - 
+    ==> all infos left are Added
+    ==> the redeems field of the coupon side pushes a new timestamp
+
+POV - when purchasing a campaign at phase [2] FAILS or was not SUCCESSFUL - 
+    ==> the purchaseCount field of campaign side is decreamented
+    ==> the user.count field of campaign side is decreamented
+    ==> the noOfCoupon.avail of the coupon side is increamented 
+
+POV - _connectedId is created at the root level of the merchant document when they create a connect account
+  
+POV - On the client side, disabling or destroying the payment sheet once the payment fails is A must to avoid unecessary redundacy
+POV - Before Notifying the Enduser the campaign was purchased, you must call the purchase_state hook to confirm.

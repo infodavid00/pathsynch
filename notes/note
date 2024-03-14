@@ -1,0 +1,18 @@
+1 - [done] on account creation [customers] : profile status = +10
+2 - [done] on verification [customers]: profile status = +30
+3 - [done] on added profile photo [customers]: profile status = +20
+5 - [done] on adding personalisation (for customers) = +40
+
+[done] forgotten password is only for account signed using default flow.
+
+[done] upon refering a freind, you get 1 $path
+[done] upon completing profile , you get 2 $path [*** profile status is only useful to track if profile status is completed so as to update patpoints for completation of profile**]
+[done] upon verifying account customeer gets 1 $path
+[done] upon allowing access customer gets 1 $path
+[done=>phase1] upon following on facebook, x or instagram, customer gets $1path
+[done] on creating and verifying merchant, a stripe express connect account will be created.
+[done] add an endpoint for going to onboarding and verifying merchant [can only verify once].
+[done] on first campaign, if details are missing or not and connect account isnt verifed, request is cancelled.
+[done] upon verifying account, webhook listens for these updates and mark the doc on the database as verified.
+[done] response to support center messages are sent to the provided email.
+//TODO: [] setup stripe to credit balance anually, and add apple and google pay to payment methods.
