@@ -3,9 +3,7 @@
 import sgMail from "@sendgrid/mail";
 import { _sendgrid_api_key } from "../src/.config/var/connection.js";
 
-sgMail.setApiKey(
-  "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"
-);
+
 
 const msg = {
   to: "da40au40@gmail.com",

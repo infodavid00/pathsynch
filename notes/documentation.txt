@@ -1187,6 +1187,7 @@ section::
   "servicesTypes" : ["Plumbering"], <span style="color:rgba(200,200,200,0.6);">//get all merchants where servicesTypes has valueofservicesTypes </span>
   "services" : ["IT"], <span style="color:rgba(200,200,200,0.6);">//get all merchants where services has valueofservices </span>
   "creation" : "dd/mm/yyyy" <span style="color:rgba(200,200,200,0.6);">//get all merchants where creationdate is valueofcreationdate </span>
+  "trail" : ""
 },
  ::computercode
  content:: the projection object is to specify what data to return. ::content
