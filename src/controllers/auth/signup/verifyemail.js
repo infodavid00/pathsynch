@@ -32,7 +32,8 @@ export default async function verifyemail(rq, rs, pass) {
         const account = await Stripe.accounts.create({
           type: "express",
         });
-        let _connectedId = account.id;
+        let _connectedId = account?.id;
+
         await addStripeConnectedid(payload.id, _connectedId);
         // Create connect account
 
